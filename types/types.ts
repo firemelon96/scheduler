@@ -1,9 +1,11 @@
-import { Event, User } from '@prisma/client';
+import { Booking, Event, User } from '@prisma/client';
 
 export type UserWithoutMeta = Pick<
   User,
   'email' | 'name' | 'imageUrl' | 'username'
 >;
+
+export type UserNameEmail = Pick<User, 'name' | 'email'>;
 
 export type EventTypeWithoutMeta = Omit<
   Event,
@@ -24,3 +26,22 @@ export type FieldPath =
   | `${Day}.startTime`
   | `${Day}.endTime`
   | 'timeGap';
+
+export type BookingWithoutMeta = Pick<
+  Booking,
+  'eventId' | 'additionalInfo' | 'email' | 'endTime' | 'startTime' | 'name'
+>;
+
+export type MeetingType = 'upcoming' | 'past';
+
+export type BookingWithEventAndUser = Booking & {
+  event: Event & {
+    user: UserNameEmail;
+  };
+};
+
+export type BookingWithEvent = Booking & {
+  event: {
+    title: string;
+  };
+};

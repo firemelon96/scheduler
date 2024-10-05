@@ -167,7 +167,7 @@ export const AvailabilityForm = ({ initialData }: Props) => {
         />
 
         <Button variant='default' disabled={isPending} type='submit'>
-          submit
+          {isPending ? 'Updating...' : 'Update availability'}
         </Button>
       </form>
     </Form>

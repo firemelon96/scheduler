@@ -12,7 +12,7 @@ type Props = {
 const EventDetails = ({ event }: Props) => {
   const { user } = event;
   return (
-    <div className='p-10 lg:w-1/3 bg-white'>
+    <div className='p-10 lg:w-1/3 w-full md:h-[746px] bg-white'>
       <h1 className='text-3xl font-bold mb-4'>{event.title}</h1>
       <div className='flex items-center mb-4'>
         <Avatar className='size-12 mr-4'>
@@ -26,11 +26,11 @@ const EventDetails = ({ event }: Props) => {
       </div>
 
       <div className='flex items-center mb-2'>
-        <Clock className='mr-2' />
+        <Clock className='mr-2 size-4' />
         <span>{event.duration} minutes</span>
       </div>
       <div className='flex items-center mb-4'>
-        <Calendar className='mr-2' />
+        <Calendar className='mr-2 size-4' />
         <span>Google meet</span>
       </div>
       <p className='text-gray-700'>{event.description}</p>

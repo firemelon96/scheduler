@@ -168,7 +168,7 @@ export async function getEventAvailability(eventId: string) {
 
   const availableDates = [];
 
-  for (let date = startDate; date <= endDate; date = addDays(startDate, 1)) {
+  for (let date = startDate; date <= endDate; date = addDays(date, 1)) {
     const dayOfWeek = format(date, 'EEEE').toUpperCase();
     const dayAvailability = availability.days.find((d) => d.day === dayOfWeek);
 
@@ -181,7 +181,7 @@ export async function getEventAvailability(eventId: string) {
         event.duration,
         bookings,
         dateStr,
-        availability.timeGap
+        availability.timeGap || 0
       );
 
       availableDates.push({

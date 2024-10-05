@@ -46,9 +46,9 @@ export async function getUserAvailability() {
       isAvailable: !!dayAvailability,
       startTime: dayAvailability
         ? dayAvailability.startTime.toISOString().slice(11, 16)
-        : '9:00',
+        : '09:00',
       endTime: dayAvailability
-        ? dayAvailability.startTime.toISOString().slice(11, 16)
+        ? dayAvailability.endTime.toISOString().slice(11, 16)
         : '17:00',
     };
   });

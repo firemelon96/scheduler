@@ -14,15 +14,27 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { useEffect, useTransition } from 'react';
+import { useEffect, useState, useTransition } from 'react';
 import { updateUsername } from '@/actions/users';
 import { formSchema } from '@/types/schema';
 import { toast } from 'sonner';
+import { getLatestUpdates } from '@/actions/dashboard';
+import { useRouter } from 'next/navigation';
+import { BookingWithEvent } from '@/types/types';
+import { format } from 'date-fns';
 
 const Dashboard = () => {
   const { isLoaded, user } = useUser();
 
-  const [isPending, setTransition] = useTransition();
+  const [meetingUpdates, setmeetingUpdates] = useState<
+    BookingWithEvent[] | null
+  >([]);
+
+  const router = useRouter();
+
+  const [isPending, startTransition] = useTransition();
+
+  const [isPendingUpdate, startTransitionUpdate] = useTransition();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -32,12 +44,20 @@ const Dashboard = () => {
   });
 
   useEffect(() => {
+    startTransitionUpdate(() =>
+      getLatestUpdates().then((data) => {
+        setmeetingUpdates(data);
+        router.refresh();
+      })
+    );
+  }, []);
+
+  useEffect(() => {
     form.setValue('username', user?.username || '');
   }, [isLoaded, form, user?.username]);
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    // console.log(values);
-    setTransition(() => {
+    startTransition(() => {
       updateUsername(values)
         .then(() => toast.success('Username updated!'))
         .catch((error) => toast.error(error.message));
@@ -50,7 +70,30 @@ const Dashboard = () => {
         <CardHeader>
           <CardTitle>Welcome {user?.firstName}</CardTitle>
         </CardHeader>
-        {/* Latest updates */}
+        <CardContent>
+          {!isPendingUpdate ? (
+            <div>
+              {meetingUpdates && meetingUpdates.length > 0 ? (
+                <ul>
+                  {meetingUpdates.map((meeting) => (
+                    <li key={meeting.id}>
+                      {meeting.event.title} on{' '}
+                      {format(
+                        new Date(meeting.startTime),
+                        'MMM d, yyyy h:mm a'
+                      )}{' '}
+                      With {meeting.name}
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p>No upcoming meeting</p>
+              )}
+            </div>
+          ) : (
+            <p>No upcoming meetings</p>
+          )}
+        </CardContent>
       </Card>
 
       <Card>
